@@ -1,0 +1,1 @@
+select json_agg(code order by code) result from roles;

@@ -1,0 +1,12 @@
+import Link from 'next/link';
+import { StoreFooter, StoreHeader } from '@/components/storefront';
+import { AccountShell } from '@/components/account-shell';
+import { requireUser } from '@/lib/auth/rbac';
+import { supabaseAdmin } from '@/lib/supabase/server';
+import { deleteAddress, saveAddress, setDefaultAddress } from '@/lib/customer/actions';
+
+export default async function AddressesPage(){
+  const user=await requireUser();
+  const {data:addresses}=await supabaseAdmin.from('addresses').select('*').eq('user_id',user.id).order('created_at');
+  return <><StoreHeader/><AccountShell user={user}><h2 className="text-2xl font-semibold text-rose-950">Addresses</h2><p className="mt-2 text-sm text-stone-500">Phone: 8-20 digits/spaces/+/- · postal code: 4-10 digits.</p><form action={saveAddress} className="mt-6 grid gap-3 md:grid-cols-2">{['recipient_name','phone','province','city','district','postal_code'].map(n=><input key={n} name={n} placeholder={n.replace('_',' ')} required className="rounded-full bg-rose-50 px-4 py-3"/>)}<textarea name="full_address" placeholder="full address" required className="rounded-3xl bg-rose-50 px-4 py-3 md:col-span-2"/><input name="notes" placeholder="notes" className="rounded-full bg-rose-50 px-4 py-3 md:col-span-2"/><label><input type="checkbox" name="is_default"/> Default</label><button className="rounded-full bg-rose-900 px-6 py-3 text-white">Save address</button></form>{addresses?.length?<div className="mt-8 grid gap-4">{addresses.map(a=><div key={a.id} className="rounded-3xl border border-rose-100 p-5"><p className="font-medium">{a.recipient_name} {a.is_default?<span className="rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700">Default</span>:null}</p><p className="text-sm text-stone-600">{a.phone} · {a.full_address}, {a.district}, {a.city}, {a.province} {a.postal_code}</p><Link className="mr-3 text-rose-700" href={`/account/addresses/${a.id}/edit`}>Edit</Link><form action={setDefaultAddress} className="inline"><input type="hidden" name="id" value={a.id}/><button className="mr-3 text-rose-700">Set default</button></form><form action={deleteAddress} className="inline"><input type="hidden" name="id" value={a.id}/><button disabled={addresses.length===1} className="text-stone-500 disabled:opacity-40">Delete</button></form></div>)}</div>:<div className="mt-8 rounded-3xl border border-dashed border-rose-200 bg-rose-50 p-8 text-center text-stone-600">No address yet.</div>}</AccountShell><StoreFooter/></>;
+}

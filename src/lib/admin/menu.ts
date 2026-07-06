@@ -1,0 +1,18 @@
+export const adminMenu = [
+  { href: '/admin/dashboard', label: 'Dashboard', permission: 'dashboard.read' },
+  { href: '/admin/products', label: 'Products', permission: 'products.manage' },
+  { href: '/admin/categories', label: 'Categories', permission: 'categories.manage' },
+  { href: '/admin/variants', label: 'Variants', permission: 'products.manage' },
+  { href: '/admin/orders', label: 'Orders', permission: 'orders.manage' },
+  { href: '/admin/customers', label: 'Customers', permission: 'customers.read' },
+  { href: '/admin/reviews', label: 'Reviews', permission: 'reviews.manage' },
+  { href: '/admin/vouchers', label: 'Vouchers', permission: 'discounts.manage' },
+  { href: '/admin/banners', label: 'Banners', permission: 'banners.manage' },
+  { href: '/admin/blog', label: 'Blog', permission: 'blog.manage' },
+  { href: '/admin/pages', label: 'Pages', permission: 'pages.manage' },
+  { href: '/admin/faqs', label: 'FAQs', permission: 'pages.manage' },
+  { href: '/admin/users', label: 'Users', permission: 'admin_users.manage' },
+  { href: '/admin/roles', label: 'Roles', permission: 'roles.manage' },
+  { href: '/admin/settings', label: 'Settings', permission: 'settings.manage' },
+  { href: '/admin/audit-logs', label: 'Audit Logs', permission: 'audit_logs.read' },
+] as const;

@@ -1,0 +1,1 @@
+select count(*) from audit_logs where module='products' and action in ('upload_image','delete_image','set_primary_image');

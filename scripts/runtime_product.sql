@@ -1,0 +1,1 @@
+select count(*) from products where sku='RUNTIME-SERUM-001';

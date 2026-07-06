@@ -1,0 +1,1 @@
+select exists(select 1 from role_permissions rp join roles r on r.id=rp.role_id join permissions p on p.id=rp.permission_id where r.code='ADMIN' and p.code='discounts.manage') result;

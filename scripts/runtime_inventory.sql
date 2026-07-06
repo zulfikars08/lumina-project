@@ -1,0 +1,1 @@
+select count(*) from inventory_logs il left join products p on p.id=il.product_id left join product_variants pv on pv.id=il.variant_id where p.sku='RUNTIME-SERUM-001' or pv.sku='RUNTIME-SERUM-001-30ML';

@@ -1,0 +1,1 @@
+select count(*) result from permissions;

@@ -1,0 +1,1 @@
+select count(*) result from role_permissions rp join roles r on r.id=rp.role_id where r.code='SUPER_ADMIN';

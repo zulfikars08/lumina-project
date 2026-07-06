@@ -1,0 +1,1 @@
+select json_agg(id order by id) result from storage.buckets where id in ('products','banners','blog','content');

@@ -1,0 +1,1 @@
+select count(*) result from information_schema.tables where table_schema='public' and table_name in ('users','roles','permissions','role_permissions','user_roles','categories','products','product_variants','inventory_logs','carts','orders','payments','invoices','vouchers','reviews','banners','homepage_sections','blogs','static_pages','faqs','settings','audit_logs');

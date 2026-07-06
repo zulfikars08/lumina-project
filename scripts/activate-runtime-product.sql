@@ -1,0 +1,2 @@
+update products set status='active', short_description='Lightweight glow serum for daily radiance.', description='A soft, hydrating serum designed for an easy daily routine.', benefits='Hydrating\nSoft glow\nComfortable finish', how_to_use='Apply after cleansing before moisturizer.', ingredients='Aqua, glycerin, botanical extract.' where sku='RUNTIME-SERUM-001';
+update categories set is_active=true where slug='runtime-skincare';

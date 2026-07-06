@@ -1,0 +1,1 @@
+select count(*) from audit_logs where module in ('categories','products','product_variants') and action in ('create','update','upload_image','delete_image','set_primary_image');

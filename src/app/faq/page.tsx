@@ -1,0 +1,2 @@
+import { StoreFooter, StoreHeader } from '@/components/storefront';
+export default function Page() { return <><StoreHeader /><main className="mx-auto max-w-4xl px-4 py-16"><p className="text-sm uppercase tracking-[0.3em] text-rose-500">Lumina</p><h1 className="mt-3 text-4xl font-semibold text-rose-950">FAQ</h1><p className="mt-4 text-stone-600">Content managed page placeholder.</p></main><StoreFooter /></>; }
