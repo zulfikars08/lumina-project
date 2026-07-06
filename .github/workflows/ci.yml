@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: dummy
+      SESSION_SECRET: dummy_session_secret_for_ci_only_32_chars
+      MIDTRANS_IS_PRODUCTION: 'false'
+      MIDTRANS_SERVER_KEY: dummy
+      NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: dummy
+      APP_URL: http://localhost:3000
+      MIDTRANS_NOTIFICATION_URL: http://localhost:3000/api/midtrans/webhook
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build

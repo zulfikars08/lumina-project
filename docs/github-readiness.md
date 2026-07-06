@@ -21,3 +21,11 @@ Do not commit:
 - Gmail/SMTP credentials
 - Session secrets
 - Local `.env` files
+
+## CI/CD
+
+GitHub Actions runs `npm ci`, `npm run lint`, and `npm run build` on pushes and pull requests to `main` using Node.js 22.
+
+The workflow uses dummy build-time environment values only. Real Supabase, Midtrans, SMTP, and session secrets must be configured in Vercel Environment Variables, not GitHub and not the repo.
+
+Vercel should deploy from `main` after CI/build is clean.
