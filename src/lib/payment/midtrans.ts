@@ -9,6 +9,15 @@ const apiBase = env.midtransIsProduction ? 'https://api.midtrans.com/v2' : 'http
 
 type MidtransStatus = { transaction_status?: string; fraud_status?: string; status_code?: string; gross_amount?: string; order_id?: string; signature_key?: string };
 
+type ReceiptOrder = {
+  id: string;
+  order_number: string;
+  grand_total: number;
+  shipping_address: { recipient_name?: string; phone?: string; full_address?: string; district?: string; city?: string; province?: string; postal_code?: string };
+  users?: { email?: string; name?: string } | null;
+  order_items?: Array<{ product_name: string; variant_name: string | null; sku: string; quantity: number; total_price: number }>;
+};
+
 function auth() {
   if (!env.midtransServerKey) throw new Error('Missing MIDTRANS_SERVER_KEY');
   return `Basic ${Buffer.from(`${env.midtransServerKey}:`).toString('base64')}`;
@@ -58,12 +67,15 @@ export async function applyMidtransStatus(body: MidtransStatus) {
   const expired = status === 'expire';
   const failed = ['cancel', 'deny', 'failure'].includes(status ?? '');
   const refunded = status === 'refund';
-  const paymentStatus = paid ? 'PAID' : expired ? 'EXPIRED' : failed ? 'FAILED' : refunded ? 'REFUNDED' : 'PENDING';
-  const orderStatus = paid ? 'PAID' : expired ? 'EXPIRED' : failed ? 'CANCELLED' : refunded ? 'REFUNDED' : 'PENDING_PAYMENT';
-  const previous = payment.status;
-  await supabaseAdmin.from('payments').update({ status: paymentStatus, raw_response: body, paid_at: paid ? new Date().toISOString() : payment.paid_at }).eq('id', payment.id);
+  const previous = payment.status as string;
+  const alreadyPaid = previous === 'PAID';
+  const paymentStatus = alreadyPaid && !refunded ? 'PAID' : paid ? 'PAID' : expired ? 'EXPIRED' : failed ? 'FAILED' : refunded ? 'REFUNDED' : 'PENDING';
+  const orderStatus = alreadyPaid && !refunded ? 'PAID' : paid ? 'PAID' : expired ? 'EXPIRED' : failed ? 'CANCELLED' : refunded ? 'REFUNDED' : 'PENDING_PAYMENT';
+  const raw = { ...(typeof payment.raw_response === 'object' && payment.raw_response ? payment.raw_response : {}), midtrans: body };
+  await supabaseAdmin.from('payments').update({ status: paymentStatus, raw_response: raw, paid_at: paid && !payment.paid_at ? new Date().toISOString() : payment.paid_at }).eq('id', payment.id);
   await supabaseAdmin.from('orders').update({ status: orderStatus }).eq('id', payment.order_id);
-  if ((expired || failed) && !['EXPIRED', 'FAILED'].includes(previous)) await restoreStock(payment.order_id);
+  if ((expired || failed) && !['EXPIRED', 'FAILED', 'PAID', 'REFUNDED'].includes(previous)) await restoreStock(payment.order_id);
+  if (paymentStatus === 'PAID' && previous !== 'PAID') await sendReceiptEmailOnce(payment.id, payment.order_id, raw);
   return { paymentStatus, orderStatus };
 }
 
@@ -81,4 +93,27 @@ async function restoreStock(orderId: string) {
     }
     await supabaseAdmin.from('inventory_logs').insert({ product_id: item.product_id, variant_id: item.variant_id, change_qty: item.quantity, reason: 'ORDER_CANCELLED_RESTORE', reference_type: 'orders', reference_id: orderId });
   }
+}
+
+async function sendReceiptEmailOnce(paymentId: string, orderId: string, raw: Record<string, unknown>) {
+  if (raw.receipt_email_sent_at) return;
+  if (!env.resendApiKey || !env.emailFrom) {
+    console.warn('Receipt email skipped: missing RESEND_API_KEY or EMAIL_FROM');
+    return;
+  }
+  const { data: order } = await supabaseAdmin.from('orders').select('id,order_number,grand_total,shipping_address,users(email,name),order_items(product_name,variant_name,sku,quantity,total_price)').eq('id', orderId).single<ReceiptOrder>();
+  const to = order?.users?.email;
+  if (!order || !to) {
+    console.warn('Receipt email skipped: missing order/customer email', { orderId });
+    return;
+  }
+  const address = order.shipping_address ?? {};
+  const items = (order.order_items ?? []).map((item) => `<li>${item.product_name}${item.variant_name ? ` (${item.variant_name})` : ''} — ${item.quantity} × ${item.sku} — Rp ${Number(item.total_price).toLocaleString('id-ID')}</li>`).join('');
+  const html = `<h1>Payment received</h1><p>Order ${order.order_number}</p><p>Customer: ${order.users?.name ?? to}</p><p>Status: PAID</p><ul>${items}</ul><p>Total paid: Rp ${Number(order.grand_total).toLocaleString('id-ID')}</p><p>Ship to: ${address.recipient_name ?? ''}, ${address.full_address ?? ''}, ${address.district ?? ''}, ${address.city ?? ''}, ${address.province ?? ''} ${address.postal_code ?? ''}</p>`;
+  const response = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${env.resendApiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: env.emailFrom, to, subject: `Lumina receipt ${order.order_number}`, html }) });
+  if (!response.ok) {
+    console.error('Receipt email failed', { orderId, status: response.status, body: await response.text() });
+    return;
+  }
+  await supabaseAdmin.from('payments').update({ raw_response: { ...raw, receipt_email_sent_at: new Date().toISOString() } }).eq('id', paymentId);
 }

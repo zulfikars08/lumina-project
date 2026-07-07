@@ -13,4 +13,6 @@ export const env = {
   midtransClientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY ?? '',
   midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
   midtransNotificationUrl: process.env.MIDTRANS_NOTIFICATION_URL ?? '',
+  resendApiKey: process.env.RESEND_API_KEY ?? '',
+  emailFrom: process.env.EMAIL_FROM ?? '',
 };
