@@ -18,5 +18,5 @@ export function PayNow({ orderId, clientKey, redirectUrl }: { orderId: string; c
     if (data.redirect_url || redirectUrl) location.href = data.redirect_url ?? redirectUrl;
     else setError('Payment popup failed to load.');
   }
-  return <><Script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key={clientKey} strategy="afterInteractive" /><button onClick={pay} disabled={busy} className="mt-4 rounded-full bg-rose-900 px-6 py-3 text-white disabled:bg-stone-200">{busy ? 'Preparing payment...' : 'Pay Now'}</button>{error ? <p className="mt-2 text-sm text-rose-700">{error}</p> : null}</>;
+  return <><Script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key={clientKey} strategy="afterInteractive" /><button onClick={pay} disabled={busy} className="mt-4 rounded-full px-6 py-3 theme-button disabled:bg-[var(--surface-muted)]">{busy ? 'Preparing payment...' : 'Pay Now'}</button>{error ? <p className="mt-2 text-sm text-rose-700">{error}</p> : null}</>;
 }

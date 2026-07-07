@@ -7,5 +7,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className="h-full antialiased"><body className="min-h-full flex flex-col">{children}</body></html>;
+  const initTheme = "try{var t=localStorage.getItem('lumina-theme')==='dark'?'dark':'light';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}";
+  return <html lang="en" className="h-full antialiased" suppressHydrationWarning><body className="min-h-full flex flex-col"><script dangerouslySetInnerHTML={{ __html: initTheme }} />{children}</body></html>;
 }
