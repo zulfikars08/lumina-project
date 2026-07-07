@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
-import { imageUrl } from '@/lib/public/catalog';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Badge } from '@/components/ui';
+import { ProductImage } from '@/components/product-image';
 
 type CardProduct = {
   name: string;
@@ -59,8 +58,7 @@ export function StoreFooter() {
 export function ProductCard({ product }: { product: CardProduct }) {
   const primary = [...(product.product_images ?? [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || (a.sort_order ?? 0) - (b.sort_order ?? 0))[0];
   const category = Array.isArray(product.categories) ? product.categories[0] : product.categories;
-  const url = imageUrl('products', primary?.file_path);
-  return <Link href={`/products/${product.slug}`} className="group block overflow-hidden rounded-[2rem] border theme-surface transition duration-300 hover:-translate-y-1 hover:shadow-2xl"><div className="relative aspect-[4/5] overflow-hidden bg-[var(--surface-muted)]"><div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2"><Badge>{category?.name ?? 'Lumina'}</Badge>{product.discount_price ? <Badge tone="warning">Sale</Badge> : null}</div><span className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)]/90 theme-brand shadow-sm transition group-hover:scale-110">♡</span>{url ? <img src={url} alt={primary?.alt_text ?? product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /> : <div className="flex h-full items-center justify-center text-sm theme-text-muted">Lumina image</div>}</div><div className="p-5"><p className="text-xs uppercase tracking-[0.22em] theme-brand">Beauty essential</p><h3 className="mt-2 line-clamp-2 font-medium theme-text">{product.name}</h3><div className="mt-4 flex items-baseline gap-2"><span className="text-lg font-semibold theme-heading">Rp {Number(product.discount_price ?? product.price).toLocaleString('id-ID')}</span>{product.discount_price ? <span className="text-sm line-through theme-text-muted">Rp {Number(product.price).toLocaleString('id-ID')}</span> : null}</div><p className="mt-3 text-sm theme-text-muted">Soft ritual, everyday glow.</p></div></Link>;
+  return <Link href={`/products/${product.slug}`} className="group block overflow-hidden rounded-[2rem] border theme-surface transition duration-300 hover:-translate-y-1 hover:shadow-2xl"><div className="relative aspect-[4/5] overflow-hidden bg-[var(--surface-muted)]"><div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2"><Badge>{category?.name ?? 'Lumina'}</Badge>{product.discount_price ? <Badge tone="warning">Sale</Badge> : null}</div><span className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)]/90 theme-brand shadow-sm transition group-hover:scale-110">♡</span><ProductImage path={primary?.file_path} alt={primary?.alt_text ?? product.name} className="h-full w-full transition duration-500 group-hover:scale-105" /></div><div className="p-5"><p className="text-xs uppercase tracking-[0.22em] theme-brand">Beauty essential</p><h3 className="mt-2 line-clamp-2 font-medium theme-text">{product.name}</h3><div className="mt-4 flex items-baseline gap-2"><span className="text-lg font-semibold theme-heading">Rp {Number(product.discount_price ?? product.price).toLocaleString('id-ID')}</span>{product.discount_price ? <span className="text-sm line-through theme-text-muted">Rp {Number(product.price).toLocaleString('id-ID')}</span> : null}</div><p className="mt-3 text-sm theme-text-muted">Soft ritual, everyday glow.</p></div></Link>;
 }
 
 export function EmptyState({ title }: { title: string }) {

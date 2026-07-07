@@ -177,3 +177,22 @@ Remaining migration:
 - Customer profile/address/wishlist/cart/order list need deeper per-form card conversion.
 - Real mobile viewport QA still required.
 
+## Deep CRUD + customer pass — 2026-07-07
+
+Migrated now:
+- Admin products list/detail: shared headers, cards, fields, status/stock badges, table shell, product image fallback.
+- Admin categories list/detail: shared headers, cards, fields, status badge, table shell, image upload card.
+- Admin variants list/detail: shared headers, cards, fields, status/stock badges, table shell.
+- Customer profile, wishlist, cart, orders list: shared account headers/cards/empty states/buttons.
+- Product image fallback: `ProductImage` branded placeholder used in product cards, cart, admin product image grid, and related surfaces touched in this pass.
+
+Audit status:
+- Code/CSS audited only for mobile responsiveness in this pass.
+- `npm run lint` and `npm run build` are verification gates.
+
+Remaining:
+- Address edit page deeper form polish.
+- Account addresses action row polish.
+- Product detail/checkout/order item image fallback can be expanded further.
+- Real browser mobile screenshots still required.
+
