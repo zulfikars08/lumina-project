@@ -27,11 +27,23 @@ Lumina is a beauty/cosmetic e-commerce platform built as a fullstack Next.js app
 - Invoice draft
 - Midtrans Snap token, pay route, and manual status check foundation
 
+## Current UI/UX status
+
+- Light mode is the default theme.
+- Dark mode is supported through shared theme tokens.
+- Storefront header, footer, product cards, auth pages, account shell, and admin shell have been polished.
+- Customer cart checkout flow was verified with an authenticated runtime customer.
+- Checkout readability was verified with an authenticated runtime customer.
+- Admin dashboard/products were audited with a Super Admin session.
+- Detailed audit notes live in [`docs/ui-ux-audit.md`](docs/ui-ux-audit.md).
+
 ## Not finished yet
 
 - Midtrans webhook runtime with public URL
 - Receipt email sending
-- UI/UX polish
+- Full mobile visual QA with real viewport screenshots
+- Full authenticated customer/admin page-by-page visual QA
+- Runtime product image asset replacement
 - Production deployment hardening
 
 ## Local setup
