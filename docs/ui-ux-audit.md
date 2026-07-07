@@ -121,3 +121,20 @@ Remaining:
 - Product detail/checkout/order item image fallback can be expanded further.
 - Real browser mobile screenshots still required.
 
+## Final customer/public pass — 2026-07-07
+
+Migrated now:
+- Address list and edit flow use `PageHeader`, `Card`, `Field`, `Button`, `Badge`, `EmptyState`, and `Alert`.
+- Product detail gallery uses `ProductImage` fallback for hero and thumbnails.
+- Checkout cart item rows use `ProductImage` fallback.
+- Order detail item rows use compact branded fallback blocks where stored image data is not available.
+
+Mobile audit status:
+- Code/CSS audited only in this pass. No real mobile screenshots captured by assistant tooling.
+- Layouts use mobile-first grids, wrapped actions, table shells, and card stacking.
+
+Remaining known gaps:
+- Public product detail could still get richer tabs/reviews later.
+- Order item real images would require query/data shape change, intentionally skipped.
+- Real device/browser screenshots still recommended before portfolio handoff.
+
