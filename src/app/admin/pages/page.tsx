@@ -1,2 +1,12 @@
+import { EmptyState, PageHeader } from '@/components/ui';
 import { requirePermission } from '@/lib/auth/rbac';
-export default async function Page() { await requirePermission('pages.manage'); return <h1>Pages</h1>; }
+
+export default async function Page() {
+  await requirePermission('pages.manage');
+  return (
+    <div className="space-y-6">
+      <PageHeader eyebrow="Admin" title="Pages" description="Manage static content pages." />
+      <EmptyState icon="✦" title="No records to show" description="This module keeps existing functionality and now uses the shared admin surface." />
+    </div>
+  );
+}

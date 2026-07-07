@@ -87,3 +87,18 @@ Credentials used:
 - Price clarity: product detail now labels variant products as `From Rp ...` and explains selected variant/cart price follows variant price.
 - Admin products issue found: browser-default form/list/table. Added global input/table/list styling to improve baseline admin readability without rewriting business logic.
 - Mobile remains code/CSS audited only because viewport resize proof unavailable.
+
+## Migration update — 2026-07-07
+
+Migrated now:
+- Admin placeholder modules use `PageHeader` + `EmptyState`.
+- Admin dashboard uses KPI cards, recent orders, no fake activity.
+- Account overview uses dashboard cards.
+- Checkout uses card-based two-column layout and shared `Button`/`Alert`/`PageHeader`.
+- Order detail uses shared status badges and `OrderTimeline`.
+
+Remaining migration:
+- Deep CRUD forms/tables: products, categories, variants detail pages need full `Field`/`TableShell` pass.
+- Customer profile/address/wishlist/cart/order list need deeper per-form card conversion.
+- Real mobile viewport QA still required.
+
